@@ -1,0 +1,26 @@
+name: Build and deploy to dev
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, labeled]
+
+# Cancel any existing runs of this workflow on the same branch/pr
+# We always want to build/deploy/test a new commit over an older one
+concurrency:
+  group: ${{ github.workflow_ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Looks for labels like "deploy-to-<env>" attached to a PR so we can deploy to those envs
+  get-deploy-labels:
+    runs-on: mdb-dev
+    outputs:
+      deploy-envs: ${{ steps.get-labels.outputs.deploy-envs }}
+    steps:
+      - name: Pull MindsDB Github Actions
+        uses: actions/checkout@v4
+        with:
+          repository: mindsdb/github-actions
+          path: github-actions
+      - id: get-labels
+        uses: ./github-actions/get-deploy-labels
