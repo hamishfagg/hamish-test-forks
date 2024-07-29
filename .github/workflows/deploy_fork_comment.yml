@@ -1,0 +1,33 @@
+name: Comment on fork PRs
+
+permissions:
+  pull-requests: write
+  repository-projects: write
+
+
+on:
+  workflow_run:
+    workflows: ["Build and deploy to dev"]
+    types:
+      - completed
+
+# Cancel any existing runs of this workflow on the same branch/pr
+# We always want to build/deploy/test a new commit over an older one
+concurrency:
+  group: ${{ github.workflow_ref }}
+  cancel-in-progress: true
+
+jobs:
+  comment:
+    runs-on: mdb-dev
+    if: github.event.pull_request.head.repo.fork
+    steps:
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '${{ github.event.workflow_run.head_sha }}'
+            })
