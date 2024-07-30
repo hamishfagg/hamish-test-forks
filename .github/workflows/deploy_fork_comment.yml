@@ -18,9 +18,18 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  printJob:    
+    name: Print event
+    runs-on: ubuntu-latest
+    steps:
+    - name: Dump GitHub context
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+      run: |
+        echo "$GITHUB_CONTEXT"
   comment:
     runs-on: mdb-dev
-    if: github.event.pull_request.head.repo.fork
+    # if: github.event.pull_request.head.repo.fork
     steps:
       - uses: actions/github-script@v6
         with:
