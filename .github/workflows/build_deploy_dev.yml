@@ -29,3 +29,4 @@ jobs:
     name: Deploy
     needs: [get-deploy-labels]
     uses: ./.github/workflows/deploy_fork_comment.yml
+    secrets: inherit
