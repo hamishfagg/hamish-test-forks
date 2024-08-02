@@ -6,10 +6,7 @@ permissions:
 
 
 on:
-  workflow_run:
-    workflows: ["Build and deploy to dev"]
-    types:
-      - completed
+  workflow_call:
 
 # Cancel any existing runs of this workflow on the same branch/pr
 # We always want to build/deploy/test a new commit over an older one
@@ -21,7 +18,7 @@ jobs:
 
   comment:
     runs-on: mdb-dev
-    # if: github.event.pull_request.head.repo.fork
+    if: github.event.pull_request.head.repo.fork
     steps:
       - name: Find associated pull request
         id: pr
@@ -47,5 +44,5 @@ jobs:
               issue_number: ${{ steps.pr.outputs.result }},
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '${{ github.event.workflow_run.head_sha }}'
+              body: '${{ github.sha }}, ${{ github.repository }}'
             })
