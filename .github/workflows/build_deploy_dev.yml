@@ -30,3 +30,6 @@ jobs:
     needs: [get-deploy-labels]
     uses: ./.github/workflows/deploy_fork_comment.yml
     secrets: inherit
+    permissions:
+      pull-requests: write
+      repository-projects: write
