@@ -23,7 +23,6 @@ jobs:
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: |
-          echo "LALALALALALALALALALALALAAAAAAAAAAAAAAAAA"
           echo "$GITHUB_CONTEXT"
       # - name: Find associated pull request
       #   id: pr
